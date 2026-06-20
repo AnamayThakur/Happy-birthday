@@ -21,10 +21,10 @@ const CONFIG = {
   PASSWORD: "22",                        // Change this to your start date day
 
   // The calendar date when Day 1 started (YYYY-MM-DD)
-  START_DATE: "2026-05-22",             // !! CHANGE to your actual start date
+  START_DATE: "2026-06-20",             // !! CHANGE to your actual start date
 
   // Reunion countdown — !! CHANGE to your actual meeting dates
-  MEET_START_DATE: "2026-06-15",        // When you're apart (now)
+  MEET_START_DATE: "2026-05-23",        // When you're apart (now)
   MEET_END_DATE:   "2026-11-28",        // When you'll meet again
 
   // Her name, shown in the greeting
