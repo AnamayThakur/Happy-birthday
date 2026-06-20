@@ -1,0 +1,1203 @@
+/* ============================================================
+   styles.css — 365 Reasons Why I Love You
+   
+   Design: Elegant luxury romantic
+   Palette: Champagne gold, ivory, blush, rose gold
+   Typography: Cormorant Garamond (display) + Jost (body)
+   ============================================================ */
+
+/* ── CSS Variables (Design Tokens) ─────────────────────────── */
+:root {
+  /* Colors */
+  --gold:         #C9A96E;
+  --gold-light:   #E8D5A3;
+  --gold-dark:    #9A7B4F;
+  --rose-gold:    #B5747A;
+  --blush:        #F0D6D6;
+  --blush-light:  #FAF0F0;
+  --ivory:        #FDF9F4;
+  --ivory-dark:   #F5EDE0;
+  --cream:        #FAF5EC;
+  --text-dark:    #2C1F14;
+  --text-mid:     #5C4535;
+  --text-soft:    #8C7060;
+  --text-muted:   #B8A090;
+  --border:       rgba(201, 169, 110, 0.25);
+  --border-light: rgba(201, 169, 110, 0.12);
+  --overlay-bg:   rgba(20, 12, 6, 0.92);
+
+  /* Shadows */
+  --shadow-soft:  0 4px 30px rgba(180, 130, 80, 0.08);
+  --shadow-gold:  0 2px 20px rgba(201, 169, 110, 0.18);
+  --shadow-card:  0 8px 48px rgba(44, 31, 20, 0.10);
+
+  /* Transitions */
+  --ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out:     cubic-bezier(0.0, 0.0, 0.2, 1.0);
+
+  /* Spacing */
+  --max-w:        680px;
+  --pad:          clamp(1.5rem, 5vw, 3rem);
+  --section-gap:  clamp(3rem, 8vw, 6rem);
+}
+
+/* ── Reset & Base ───────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* Slow-cycling romantic gradient — ivory → blush → lavender-blush → warm cream.
+     These are all very soft so they feel like candlelight, not a fairground. */
+  background: linear-gradient(
+    -45deg,
+    #FDF9F4,   /* ivory */
+    #FAF0F2,   /* soft blush */
+    #F4EDF8,   /* lavender-blush */
+    #FDF5EC,   /* warm cream */
+    #F8EEF3    /* rose-cream */
+  );
+  background-size: 400% 400%;
+  animation: gradientFlow 28s ease infinite;
+  color: var(--text-dark);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+/* Grain texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── Canvas (Particles) ─────────────────────────────────────── */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.75; /* slightly more visible against the coloured background */
+}
+
+/* ── Screen System ──────────────────────────────────────────── */
+.screen {
+  position: relative;
+  z-index: 10;
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.screen:not(.active) {
+  display: none;
+}
+
+/* ── Lock Screen ────────────────────────────────────────────── */
+#lock-screen {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad);
+  background: radial-gradient(ellipse at 50% 30%, rgba(201,169,110,0.07) 0%, transparent 70%),
+              var(--ivory);
+}
+
+.lock-inner {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  animation: fadeInUp 1.1s var(--ease) both;
+}
+
+.lock-icon {
+  color: var(--gold);
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0.5rem;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 12px rgba(201,169,110,0.3));
+}
+
+.lock-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.lock-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.lock-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 7vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--text-dark);
+  letter-spacing: -0.01em;
+}
+
+.lock-title em {
+  font-style: italic;
+  color: var(--rose-gold);
+}
+
+.lock-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  letter-spacing: 0.06em;
+  margin-top: -0.25rem;
+}
+
+.lock-form {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-gold);
+  transition: box-shadow 0.3s var(--ease);
+}
+
+.lock-form:focus-within {
+  box-shadow: 0 0 0 2px rgba(201,169,110,0.35), var(--shadow-gold);
+}
+
+.password-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.9rem 1.1rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.3em;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.password-input::placeholder {
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+}
+
+.unlock-btn {
+  background: var(--gold);
+  border: none;
+  cursor: pointer;
+  padding: 0.9rem 1.1rem;
+  color: var(--ivory);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 0.25s var(--ease), transform 0.15s var(--ease);
+  white-space: nowrap;
+}
+
+.unlock-btn:hover {
+  background: var(--gold-dark);
+  transform: scale(1.02);
+}
+
+.unlock-btn:active {
+  transform: scale(0.98);
+}
+
+.unlock-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.password-error {
+  font-size: 0.78rem;
+  color: var(--rose-gold);
+  letter-spacing: 0.06em;
+  min-height: 1.2em;
+  transition: opacity 0.3s;
+}
+
+.password-error:empty {
+  opacity: 0;
+}
+
+.lock-ornament {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.lock-ornament span {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.4;
+}
+
+.lock-ornament span:nth-child(2) {
+  opacity: 0.7;
+}
+
+/* ── Main Content ───────────────────────────────────────────── */
+#main-content {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  /* Top padding clears the fixed music player (~55px) plus breathing room.
+     Sides and bottom use the standard --pad variable. */
+  padding: clamp(4.5rem, 10vw, 5.5rem) var(--pad) calc(var(--pad) * 2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+/* ── Music Player ───────────────────────────────────────────── */
+.music-player {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(253,249,244,0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 0.45rem 0.9rem 0.45rem 0.45rem;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.3s var(--ease);
+}
+
+.music-player:hover {
+  box-shadow: var(--shadow-gold);
+}
+
+.music-btn {
+  background: var(--gold);
+  border: none;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ivory);
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.music-btn:hover {
+  background: var(--gold-dark);
+  transform: scale(1.08);
+}
+
+.music-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.music-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.music-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  line-height: 1;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
+/* ── Hero ───────────────────────────────────────────────────── */
+.hero {
+  text-align: center;
+  /* No extra padding-top here — #main-content already clears the
+     fixed music player. Adding more just creates blank space. */
+}
+
+.hero-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.hero-day {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(4rem, 15vw, 8rem);
+  font-weight: 300;
+  line-height: 0.9;
+  color: var(--text-dark);
+  letter-spacing: -0.02em;
+}
+
+.hero-day span {
+  display: inline;
+}
+
+.hero-of {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 3vw, 1.35rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-soft);
+  margin-top: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* ── Photo Section ──────────────────────────────────────────── */
+.photo-section {
+  display: flex;
+  justify-content: center;
+}
+
+.photo-frame {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 3/4;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card), 0 0 0 1px var(--border);
+}
+
+/* Gold corner accents */
+.photo-frame::before,
+.photo-frame::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: var(--gold-light);
+  border-style: solid;
+  z-index: 2;
+  opacity: 0.7;
+}
+
+.photo-frame::before {
+  top: 10px;
+  left: 10px;
+  border-width: 1.5px 0 0 1.5px;
+}
+
+.photo-frame::after {
+  bottom: 10px;
+  right: 10px;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+.day-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s var(--ease);
+}
+
+.photo-frame:hover .day-photo {
+  transform: scale(1.02);
+}
+
+.photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(44, 31, 20, 0.25) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Reason Card ────────────────────────────────────────────── */
+.reason-section {
+  display: flex;
+  justify-content: center;
+}
+
+.reason-card {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  padding: 2.5rem clamp(1.5rem, 5vw, 3rem);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+}
+
+.reason-card::before {
+  content: '\201C';
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 6rem;
+  line-height: 1;
+  color: var(--gold-light);
+  pointer-events: none;
+  user-select: none;
+}
+
+.reason-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+}
+
+.reason-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.3rem, 3.5vw, 1.7rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-dark);
+  line-height: 1.65;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.reason-ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  justify-content: center;
+}
+
+.ornament-line {
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: var(--border);
+}
+
+.ornament-diamond {
+  color: var(--gold);
+  font-size: 0.5rem;
+  opacity: 0.7;
+}
+
+/* ── Special Section ────────────────────────────────────────── */
+.special-section {
+  display: flex;
+  justify-content: center;
+}
+
+.special-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 2rem clamp(1.25rem, 4vw, 2.5rem);
+  background: linear-gradient(135deg, rgba(240,214,214,0.2), rgba(201,169,110,0.06));
+  border: 1px solid rgba(201,169,110,0.3);
+  border-radius: 3px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.special-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.special-audio,
+.special-video {
+  width: 100%;
+  border-radius: 3px;
+  outline: none;
+}
+
+.special-audio {
+  height: 44px;
+}
+
+/* Letter styles */
+.letter-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-dark);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.letter-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--text-mid);
+  white-space: pre-line;
+  text-align: left;
+  width: 100%;
+}
+
+/* ── Progress Section ───────────────────────────────────────── */
+.progress-section {
+  display: flex;
+  justify-content: center;
+}
+
+.progress-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 2rem clamp(1.25rem, 4vw, 2.5rem);
+  background: rgba(255,255,255,0.5);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 400;
+  color: var(--text-dark);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.stat-divider {
+  color: var(--gold);
+  font-size: 0.4rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.progress-bar-wrap {
+  position: relative;
+}
+
+.progress-bar-track {
+  height: 2px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 1.5s var(--ease-out);
+}
+
+.progress-glow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px 4px rgba(201,169,110,0.4);
+  transition: left 1.5s var(--ease-out);
+  left: 0%;
+  margin-left: -6px;
+}
+
+/* ── Reunion Section ────────────────────────────────────────── */
+.reunion-section {
+  display: flex;
+  justify-content: center;
+}
+
+.reunion-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 2.5rem clamp(1.25rem, 4vw, 2.5rem);
+  background: linear-gradient(135deg, rgba(240,214,214,0.12), rgba(201,169,110,0.04));
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reunion-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.reunion-days {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 8vw, 3.8rem);
+  font-weight: 300;
+  color: var(--text-dark);
+  line-height: 1;
+}
+
+.reunion-message {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-soft);
+}
+
+.reunion-bar {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.reunion-date-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ── Timeline Section ───────────────────────────────────────── */
+.timeline-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.section-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.timeline-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  width: 100%;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.timeline-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.timeline-item {
+  flex: 0 0 180px;
+  scroll-snap-align: start;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.timeline-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-gold);
+}
+
+.timeline-emoji {
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-date {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.timeline-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.timeline-desc {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.site-footer {
+  text-align: center;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.footer-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--text-soft);
+}
+
+.footer-forever {
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.footer-line {
+  color: var(--gold-light);
+  opacity: 0.6;
+}
+
+.footer-hint {
+  font-size: 0.6rem;
+  color: transparent;
+  user-select: none;
+  margin-top: 2rem;
+}
+
+/* ── Final Day 365 Overlay ──────────────────────────────────── */
+.final-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s var(--ease);
+}
+
+.final-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.final-inner {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  color: var(--ivory);
+  animation: fadeInUp 1s var(--ease) 0.3s both;
+}
+
+.final-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 1rem;
+}
+
+.final-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--ivory);
+  margin-bottom: 2rem;
+}
+
+.final-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.final-message {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: rgba(253,249,244,0.8);
+  max-width: 420px;
+  margin: 0 auto 2rem;
+}
+
+.final-signature {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--gold-light);
+  margin-bottom: 2rem;
+}
+
+.final-close-btn {
+  background: transparent;
+  border: 1px solid rgba(201,169,110,0.4);
+  color: var(--gold-light);
+  padding: 0.75rem 2.5rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.25s, border-color 0.25s;
+}
+
+.final-close-btn:hover {
+  background: rgba(201,169,110,0.12);
+  border-color: rgba(201,169,110,0.7);
+}
+
+/* Confetti container */
+.final-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: confettiFall linear forwards;
+}
+
+/* ── Easter Egg Overlay ─────────────────────────────────────── */
+.easter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease);
+}
+
+.easter-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.easter-inner {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  color: var(--ivory);
+  position: relative;
+  animation: fadeInUp 0.7s var(--ease) both;
+  padding: 2rem;
+  border: 1px solid rgba(201,169,110,0.2);
+  background: rgba(44,31,20,0.6);
+  border-radius: 4px;
+  backdrop-filter: blur(16px);
+}
+
+.easter-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.easter-close:hover {
+  color: var(--gold-light);
+}
+
+.easter-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.75rem;
+}
+
+.easter-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--ivory);
+  margin-bottom: 1.5rem;
+}
+
+.easter-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.easter-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: rgba(253,249,244,0.8);
+}
+
+.easter-ornament {
+  color: var(--gold);
+  font-size: 0.5rem;
+  margin-top: 1.5rem;
+  opacity: 0.6;
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes confettiFall {
+  from {
+    transform: translateY(-10px) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(105vh) rotate(720deg);
+    opacity: 0.3;
+  }
+}
+
+/* Scroll-triggered fade-in for sections */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.fade-in-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger siblings */
+.fade-in-section:nth-child(2) { transition-delay: 0.1s; }
+.fade-in-section:nth-child(3) { transition-delay: 0.2s; }
+.fade-in-section:nth-child(4) { transition-delay: 0.3s; }
+.fade-in-section:nth-child(5) { transition-delay: 0.4s; }
+.fade-in-section:nth-child(6) { transition-delay: 0.5s; }
+
+/* Shimmer reveal for the reason text */
+@keyframes shimmerReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+.reason-text.revealed {
+  animation: shimmerReveal 1.2s var(--ease-out) both;
+}
+
+/* ── Background gradient animation ──────────────────────────── */
+@keyframes gradientFlow {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* ── Flying Hearts ───────────────────────────────────────────── */
+/*
+  Hearts are created via JS and appended to <body>.
+  Each one is given CSS custom properties (--tilt, --x1…--x4, --opacity,
+  --duration, --size) so every heart has a unique, organic path.
+  They rise from the bottom, sway side-to-side, then fade out near the top.
+*/
+.floating-heart {
+  position: fixed;
+  bottom: -3rem;
+  pointer-events: none;
+  z-index: 3;           /* above canvas, below UI cards */
+  user-select: none;
+  line-height: 1;
+  font-style: normal;
+  font-size: var(--size, 1rem);
+  color: var(--heart-color, rgba(181,116,122,0.55));
+
+  /* The rise animation — duration and delay come from JS */
+  animation: riseHeart var(--duration, 9s) ease-in-out var(--delay, 0s) forwards;
+
+  will-change: transform, opacity;
+}
+
+@keyframes riseHeart {
+  /*
+    Four-waypoint path so each heart sways differently.
+    --x1 .. --x4 are pixel offsets (set randomly per heart).
+    Using translateX inside the same keyframe keeps the motion readable.
+  */
+  0% {
+    transform: translateY(0)    translateX(0)            scale(0.35) rotate(var(--tilt, 0deg));
+    opacity: 0;
+  }
+  7% {
+    transform: translateY(-7vh) translateX(var(--x1, 12px))  scale(1)    rotate(var(--tilt, 0deg));
+    opacity: var(--opacity, 0.6);
+  }
+  28% {
+    transform: translateY(-28vh) translateX(var(--x2, -18px)) scale(0.92) rotate(calc(var(--tilt,0deg) * 0.6));
+  }
+  55% {
+    transform: translateY(-55vh) translateX(var(--x3, 22px))  scale(0.85) rotate(calc(var(--tilt,0deg) * -0.2));
+    opacity: var(--opacity, 0.6);
+  }
+  80% {
+    opacity: calc(var(--opacity, 0.6) * 0.35);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(var(--x4, -8px)) scale(0.3) rotate(calc(var(--tilt,0deg) * -0.8));
+    opacity: 0;
+  }
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .music-player {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .volume-slider {
+    width: 56px;
+  }
+
+  .progress-stats {
+    gap: 0.5rem;
+  }
+
+  .stat-divider {
+    display: none;
+  }
+
+  .timeline-item {
+    flex: 0 0 160px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Placeholder image SVG fallback ─────────────────────────── */
+/* (Generated via JS — see script.js) */

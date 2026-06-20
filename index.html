@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="365 Reasons Why I Love You" />
+  <title>365 Reasons Why I Love You ❤️</title>
+
+  <!-- Google Fonts: Cormorant Garamond (luxury serif) + Jost (clean modern) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!--  CANVAS: Floating particle background              -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!--  LOCK SCREEN                                       -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <section id="lock-screen" class="screen active" role="main" aria-label="Password Screen">
+    <div class="lock-inner">
+      <div class="lock-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="30" width="48" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M20 30V22C20 13.163 27.163 6 36 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M44 30V22C44 13.163 36.837 6 28 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="32" cy="50" r="4" fill="currentColor"/>
+          <line x1="32" y1="54" x2="32" y2="62" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <p class="lock-eyebrow">a gift, only for you</p>
+      <h1 class="lock-title">365 Reasons<br/><em>Why I Love You</em></h1>
+      <p class="lock-subtitle">Enter the day we began.</p>
+
+      <div class="lock-form">
+        <input
+          type="password"
+          inputmode="numeric"
+          id="password-input"
+          class="password-input"
+          placeholder="••••"
+          maxlength="6"
+          autocomplete="off"
+          aria-label="Enter password"
+        />
+        <button id="unlock-btn" class="unlock-btn" aria-label="Unlock">
+          <span>Open</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <p id="password-error" class="password-error" role="alert" aria-live="polite"></p>
+
+      <div class="lock-ornament" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!--  MAIN CONTENT                                      -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <main id="main-content" class="screen" aria-label="Daily Love Note" aria-hidden="true">
+
+    <!-- ── Music Player ─────────────────────────────── -->
+    <div id="music-player" class="music-player" role="region" aria-label="Background Music">
+      <button id="music-toggle" class="music-btn" aria-label="Play background music">
+        <svg class="icon-play" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+        </svg>
+        <svg class="icon-pause" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none">
+          <rect x="5" y="3" width="4" height="18" fill="currentColor"/>
+          <rect x="15" y="3" width="4" height="18" fill="currentColor"/>
+        </svg>
+      </button>
+      <div class="music-info">
+        <span class="music-label">Our Song</span>
+        <input type="range" id="volume-control" min="0" max="1" step="0.05" value="0.5" class="volume-slider" aria-label="Volume" />
+      </div>
+      <audio id="bg-music" loop preload="none">
+        <!-- !! EDIT: Change this to your audio file path -->
+        <source src="audio/background.mp3" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <!-- ── Hero / Greeting ──────────────────────────── -->
+    <header class="hero fade-in-section">
+      <p class="hero-eyebrow" id="hero-greeting">For <span id="her-name-display">you</span></p>
+      <h2 class="hero-day" id="day-display">Day <span id="day-number">—</span></h2>
+      <p class="hero-of">of 365 ❤️</p>
+    </header>
+
+    <!-- ── Daily Photo ───────────────────────────────── -->
+    <section class="photo-section fade-in-section" aria-label="Today's photo">
+      <div class="photo-frame">
+        <img
+          id="day-photo"
+          src=""
+          alt="A photo for today"
+          class="day-photo"
+          onerror="this.src='images/placeholder.svg'"
+        />
+        <div class="photo-overlay" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ── Reason of the Day ─────────────────────────── -->
+    <section class="reason-section fade-in-section" aria-label="Today's reason">
+      <div class="reason-card">
+        <p class="reason-label">Today's reason</p>
+        <blockquote class="reason-text" id="reason-text">
+          "Loading…"
+        </blockquote>
+        <div class="reason-ornament" aria-hidden="true">
+          <span class="ornament-line"></span>
+          <span class="ornament-diamond">◆</span>
+          <span class="ornament-line"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Special Day Content ───────────────────────── -->
+    <section id="special-section" class="special-section fade-in-section" aria-label="Special content" style="display:none">
+      <div class="special-card">
+        <p class="special-label" id="special-label">Something extra for today ✨</p>
+        <!-- Audio player (shown for audio days) -->
+        <div id="special-audio-wrap" style="display:none">
+          <audio id="special-audio" controls class="special-audio">
+            <source id="special-audio-src" src="" type="audio/mpeg" />
+            Your browser does not support audio.
+          </audio>
+        </div>
+        <!-- Video player (shown for video days) -->
+        <div id="special-video-wrap" style="display:none">
+          <video id="special-video" controls class="special-video" playsinline>
+            <source id="special-video-src" src="" type="video/mp4" />
+            Your browser does not support video.
+          </video>
+        </div>
+        <!-- Letter (shown for letter days) -->
+        <div id="special-letter-wrap" style="display:none">
+          <h3 id="letter-title" class="letter-title"></h3>
+          <div id="letter-body" class="letter-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Progress Bar ──────────────────────────────── -->
+    <section class="progress-section fade-in-section" aria-label="Journey progress">
+      <div class="progress-card">
+        <div class="progress-stats">
+          <div class="stat">
+            <span class="stat-number" id="stat-completed">—</span>
+            <span class="stat-label">days completed</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true">◆</div>
+          <div class="stat">
+            <span class="stat-number" id="stat-percent">—</span>
+            <span class="stat-label">of our year</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true">◆</div>
+          <div class="stat">
+            <span class="stat-number" id="stat-remaining">—</span>
+            <span class="stat-label">days remaining</span>
+          </div>
+        </div>
+        <div class="progress-bar-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progress through our year">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="progress-glow" id="progress-glow" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Reunion Countdown ─────────────────────────── -->
+    <section class="reunion-section fade-in-section" aria-label="Reunion countdown">
+      <div class="reunion-card">
+        <p class="reunion-eyebrow">until we're together again</p>
+        <p class="reunion-days" id="reunion-days">— days</p>
+        <p class="reunion-message" id="reunion-message"></p>
+        <div class="progress-bar-wrap reunion-bar">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="reunion-fill"></div>
+          </div>
+        </div>
+        <p class="reunion-date-label" id="reunion-date-label"></p>
+      </div>
+    </section>
+
+    <!-- ── Memory Timeline ───────────────────────────── -->
+    <section class="timeline-section fade-in-section" aria-label="Our memories">
+      <h2 class="section-heading">Our Journey</h2>
+      <div class="timeline-scroll" id="timeline-container" role="list"></div>
+    </section>
+
+    <!-- ── Footer ────────────────────────────────────── -->
+    <footer class="site-footer fade-in-section">
+      <p class="footer-name" id="footer-name"></p>
+      <p class="footer-forever">
+        <span class="footer-line" aria-hidden="true">— </span>
+        always &amp; forever
+        <span class="footer-line" aria-hidden="true"> —</span>
+      </p>
+      <!-- Hidden easter egg trigger -->
+      <p class="footer-hint" id="easter-hint" aria-hidden="true"></p>
+    </footer>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!--  DAY 365 FINAL EXPERIENCE OVERLAY                  -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div id="final-overlay" class="final-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Final day message">
+    <div class="final-inner">
+      <div class="final-confetti" id="final-confetti" aria-hidden="true"></div>
+      <p class="final-eyebrow">Day 365 of 365</p>
+      <h2 class="final-title">365 Reasons.<br/><em>One Love.</em></h2>
+      <p class="final-message" id="final-message">
+        A year of waking up and choosing you. A year of writing these words and meaning every single one of them. This list is complete — but we are not. We are just beginning.
+        <br/><br/>
+        I love you. Yesterday, today, and in every day that comes after this one.
+        <br/><br/>
+        Thank you for being mine.
+      </p>
+      <p class="final-signature" id="final-signature"></p>
+      <button class="final-close-btn" id="final-close-btn">Close</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!--  EASTER EGG / SECRET NOTE OVERLAY                  -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div id="easter-overlay" class="easter-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Secret love note">
+    <div class="easter-inner">
+      <button class="easter-close" id="easter-close" aria-label="Close secret note">✕</button>
+      <p class="easter-eyebrow">you found it ✨</p>
+      <h2 class="easter-title">A Secret Note<br/><em>Just for You</em></h2>
+      <p class="easter-body">
+        If you found this, you were curious — and I love that about you.<br/><br/>
+        This is the hidden room. The place where I can say things I forget to say when we're talking and the world is loud.<br/><br/>
+        You are extraordinary. Not in a grand, public way. In the quiet, private, specific way that only I get to see. The way you think when you're tired. The way you care even when it's inconvenient. The way you love me even when I haven't earned it.<br/><br/>
+        I notice all of it. And I am grateful for every single piece of you.<br/><br/>
+        Now close this and go back to your day. I love you.
+      </p>
+      <div class="easter-ornament" aria-hidden="true">◆</div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
